@@ -1,0 +1,8 @@
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Domain.deps.json
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Domain.dll
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Domain.pdb
+C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.csprojAssemblyReference.cache
+C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.AssemblyInfoInputs.cache
+C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.AssemblyInfo.cs
+C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.dll
+C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.pdb
