@@ -17,17 +17,23 @@ namespace Domain.Services
         }
 
         public async Task<IEnumerable<ConsultaDto>> GetAllConsultas()
-        {           
+        {
 
-            var query = @"SELECT Id
-                              , PessoaId
-                              , Descricao
-                              , Detalhes
-                              , DataConsulta
-                              , DataAgendamento
-                          FROM Tb_Consulta";
+            var parameters = new { DataDeHoje = DateTime.Now};
 
-            var result = await Db.SqlConnection.QueryAsync<ConsultaDto>(query);             
+            var query = @"SELECT C.Id
+                    	  ,P.Nome
+                          ,PessoaId
+                          ,Descricao
+                          ,Detalhes
+                          ,DataConsulta
+                          ,DataCriacao
+                      FROM Tb_Consulta C
+                      INNER JOIN Tb_Pessoa P ON P.Id = C.PessoaId
+                      WHERE DataConsulta > @DataDeHoje 
+                      Order by DataConsulta";
+
+            var result = await Db.SqlConnection.QueryAsync<ConsultaDto>(query,parameters);             
 
             return result;
         }
@@ -39,7 +45,7 @@ namespace Domain.Services
                               ,Descricao
                               ,Detalhes
                               ,DataConsulta
-                              ,DataAgendamento
+                              ,DataCriacao
                           FROM Tb_Consulta C
                           INNER JOIN Tb_Pessoa P ON P.Id = C.PessoaId
                           WHERE P.CPF = @cpf";
@@ -47,6 +53,29 @@ namespace Domain.Services
             var result = await Db.SqlConnection.QueryAsync<ConsultaDto>(query,new { cpf });
 
             return result;
+        }
+
+        public async Task CreateConsulta(ConsultaDto consulta)
+        {
+            var parameters = new {
+               PessoaId = consulta.PessoaId,
+               Descricao = consulta.Descricao,
+               Detalhes = consulta.Detalhes,
+               DataConsulta = consulta.DataConsulta,
+               DataCriacao = DateTime.Now
+            
+            };
+             var query = @"INSERT INTO Tb_Consulta
+                               ([PessoaId]
+                               ,[Descricao]
+                               ,[Detalhes]
+                               ,[DataConsulta]
+                               ,[DataCriacao])
+                         VALUES
+                               (@PessoaId,@Descricao,@Detalhes,@DataConsulta,@DataCriacao)";
+
+            await Db.SqlConnection.ExecuteAsync(query, parameters);
+          
         }
     }
 }

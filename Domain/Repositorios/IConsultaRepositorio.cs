@@ -11,5 +11,8 @@ namespace Domain.Repositorios
         Task<IEnumerable<ConsultaDto>> GetConsultasByCpf(string cpf);
 
         Task<IEnumerable<ConsultaDto>> GetAllConsultas();
+
+        Task CreateConsulta(ConsultaDto consulta);
+
     }
 }

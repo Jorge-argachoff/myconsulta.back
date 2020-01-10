@@ -12,10 +12,12 @@ namespace Domain.Dtos
 
         public DateTime DataConsulta { get; set; }
 
-        public DateTime DataAgendamento { get; set; }
+        public DateTime DataCriacao { get; set; }
 
         public string Descricao { get; set; }
 
         public string Detalhes { get; set; }
+
+        public string Nome { get; set; }
     }
 }

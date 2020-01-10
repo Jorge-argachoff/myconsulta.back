@@ -22,8 +22,7 @@ namespace myConsulta.Controllers
             _consultaServices = consultaServices;
         }
         // GET: api/Consulta
-        [HttpGet]
-       
+        [HttpGet]      
         public async Task<IActionResult> GetAll()
         {
             try
@@ -55,8 +54,18 @@ namespace myConsulta.Controllers
 
         // POST: api/Consulta
         [HttpPost]
-        public void Post([FromBody] string value)
+        public async Task<IActionResult> Post([FromBody] ConsultaDto consulta)
         {
+            try
+            {
+                if (consulta != null) { BadRequest("Model invalido"); }
+
+                await _consultaServices.CreateConsulta(consulta);
+                return Ok();
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex); }
         }
 
         // PUT: api/Consulta/5
