@@ -58,7 +58,7 @@ namespace myConsulta.Controllers
         {
             try
             {
-                if (consulta != null) { BadRequest("Model invalido"); }
+                if (consulta == null) { BadRequest("Model invalido"); }
 
                 await _consultaServices.CreateConsulta(consulta);
                 return Ok();

@@ -35,6 +35,7 @@ namespace myConsulta
 
             services.AddScoped<IConsultaRepositorio, ConsultaServices>();
             services.AddScoped<IPessoaRepositorio, PessoaServices>();
+            services.AddScoped<IConfiguracaoRepositorio, ConfiguracaoServices>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

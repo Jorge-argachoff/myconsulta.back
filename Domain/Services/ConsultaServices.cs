@@ -62,8 +62,7 @@ namespace Domain.Services
                Descricao = consulta.Descricao,
                Detalhes = consulta.Detalhes,
                DataConsulta = consulta.DataConsulta,
-               DataCriacao = DateTime.Now
-            
+               DataCriacao = DateTime.Now            
             };
              var query = @"INSERT INTO Tb_Consulta
                                ([PessoaId]
