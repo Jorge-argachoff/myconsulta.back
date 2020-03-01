@@ -5,12 +5,13 @@ using System.Threading.Tasks;
 using Domain.Dtos;
 using Domain.Repositorios;
 using Domain.Services;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace myConsulta.Controllers
 {
-   
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class ConsultaController : ControllerBase
@@ -22,12 +23,12 @@ namespace myConsulta.Controllers
             _consultaServices = consultaServices;
         }
         // GET: api/Consulta
-        [HttpGet]      
+        [HttpGet]
         public async Task<IActionResult> GetAll()
         {
             try
             {
-                var consulta = await _consultaServices.GetAllConsultas();
+                var consulta = await _consultaServices.GetNextConsultas();
 
                 return Ok(consulta);
 
@@ -36,15 +37,48 @@ namespace myConsulta.Controllers
             { return BadRequest(ex); }
         }
 
-        // GET: api/Consulta/5
-        [HttpGet("{cpf}")]       
+        // GET: api/Consulta/
+        [HttpGet("{cpf}")]
         public async Task<IActionResult> getConsultasByCpf(string cpf)
         {
             try
             {
-                if (string.IsNullOrEmpty(cpf)){ BadRequest("Model invalido"); }
+                if (string.IsNullOrEmpty(cpf)) { BadRequest("Model invalido"); }
 
                 var consultas = await _consultaServices.GetConsultasByCpf(cpf);
+                return Ok(consultas);
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex); }
+        }
+
+        // GET: api/Consulta/
+        [HttpGet]
+        [Route("{id}/Detalhes")]
+        public async Task<IActionResult> getConsultasById(int id)
+        {
+            try
+            {
+                if (id > 0) { BadRequest("Model invalido"); }
+
+                var consultas = await _consultaServices.GetConsultasById(id);
+                return Ok(consultas);
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex); }
+        }
+
+        [HttpGet]
+        [Route("get-data/{data}")]
+        public async Task<IActionResult> getConsultasByData(string data)
+        {
+            try
+            {
+                if (string.IsNullOrEmpty(data.ToString())) { BadRequest("Model invalido"); }
+
+                var consultas = await _consultaServices.GetConsultasByData(data.ToString());
                 return Ok(consultas);
 
             }

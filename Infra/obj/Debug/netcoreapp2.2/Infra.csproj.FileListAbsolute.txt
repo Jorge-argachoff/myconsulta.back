@@ -1,0 +1,8 @@
+C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Infra.deps.json
+C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Infra.dll
+C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Infra.pdb
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.csprojAssemblyReference.cache
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.AssemblyInfoInputs.cache
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.AssemblyInfo.cs
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.dll
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.pdb

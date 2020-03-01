@@ -31,7 +31,9 @@ namespace myConsulta.Controllers
 
                 var nomesConsulta = await _configuracaoServices.GetAllNomes();
 
-                return Ok(new { horarios, nomesConsulta });
+                var medicos = await _configuracaoServices.GetAllMedicos();
+
+                return Ok(new { horarios, nomesConsulta , medicos});
 
             }
             catch (Exception ex)
@@ -71,6 +73,22 @@ namespace myConsulta.Controllers
             { return BadRequest(ex); }
         }
 
+        [HttpPost]
+        [Route("add-medico")]
+        public async Task<IActionResult> AddMedico([FromBody] MedicoDto nome)
+        {
+            try
+            {
+                if (nome == null) return BadRequest("objeto invalido!");
+
+                await _configuracaoServices.CreateMedico(nome);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            { return BadRequest(ex); }
+        }
+
         // PUT: api/Configuracao/5
         [HttpPut("{id}")]
         public void Put(int id, [FromBody] string value)
@@ -98,12 +116,28 @@ namespace myConsulta.Controllers
         {
             try
             {
-                if (id <= 0) BadRequest("Nome invalido!");
+                if (id < 1) BadRequest("Nome invalido!");
 
                 _configuracaoServices.deleteNome(id);
             }
             catch (Exception ex)
             { BadRequest(ex); }
+        }
+
+        [HttpPut]
+        [Route("excluir-medico")]
+        public async Task<IActionResult> DeleteMedico([FromBody]int id)
+        {
+            try
+            {
+                if (id < 1) BadRequest("Medico invalido!");
+
+                await _configuracaoServices.InactiveMedico(id);
+
+                return Ok();
+            }
+            catch (Exception ex)
+            {return BadRequest(ex); }
         }
     }
 }
