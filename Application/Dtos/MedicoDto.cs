@@ -2,13 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Dtos
+namespace Application.Dtos
 {
-    public class NomeConsultaDto
+    public class MedicoDto
     {
-
         public int Id { get; set; }
 
         public string Nome { get; set; }
+
+        public bool Ativo { get; set; }
     }
 }

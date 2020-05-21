@@ -549,9 +549,19 @@
           }
         }
       },
+      "Application/1.0.0": {
+        "runtime": {
+          "Application.dll": {}
+        },
+        "compile": {
+          "Application.dll": {}
+        }
+      },
       "Domain/1.0.0": {
         "dependencies": {
+          "Application": "1.0.0",
           "Dapper": "2.0.30",
+          "Infra": "1.0.0",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.2.6",
           "System.Data.SqlClient": "4.8.0"
         },
@@ -564,6 +574,8 @@
       },
       "Infra/1.0.0": {
         "dependencies": {
+          "Application": "1.0.0",
+          "Dapper": "2.0.30",
           "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.2.0",
           "Microsoft.EntityFrameworkCore": "2.2.6",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.2.6"
@@ -3913,6 +3925,11 @@
       "sha512": "sha512-aeu4FlaUTemuT1qOd1MyU4T516QR4Fy+9yDbwWMPHOHy7U8FD6SgTzdZFO7gHcfAPHtECqInbwklVvUK4RHcNg==",
       "path": "system.text.encoding.codepages/4.7.0",
       "hashPath": "system.text.encoding.codepages.4.7.0.nupkg.sha512"
+    },
+    "Application/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
     },
     "Domain/1.0.0": {
       "type": "project",

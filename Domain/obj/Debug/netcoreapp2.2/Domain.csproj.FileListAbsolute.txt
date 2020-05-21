@@ -6,3 +6,8 @@ C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.AssemblyInfoInputs.
 C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.AssemblyInfo.cs
 C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.dll
 C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.pdb
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Application.dll
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Infra.dll
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Application.pdb
+C:\Projetos\myConsulta\Domain\bin\Debug\netcoreapp2.2\Infra.pdb
+C:\Projetos\myConsulta\Domain\obj\Debug\netcoreapp2.2\Domain.csproj.CopyComplete

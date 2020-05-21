@@ -1,12 +1,13 @@
-﻿using Domain.Dtos;
+﻿using Application.Dtos;
+
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Repositorios
+namespace Infra.Interfaces
 {
-    public interface IConsultaRepositorio
+    public interface IConsultaRepository
     {
         Task<IEnumerable<ConsultaDto>> GetConsultasByCpf(string cpf);
 

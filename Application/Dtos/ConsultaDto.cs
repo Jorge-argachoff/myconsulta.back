@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Dtos
+namespace Application.Dtos
 {
     public class ConsultaDto
     {       
@@ -24,7 +24,9 @@ namespace Domain.Dtos
         public int MedicoId { get; set; }
 
         public string Medico { get; set; }
-        public List<ComentarioDto> Comentarios { get; set; }
+        public IEnumerable<ComentarioDto> Comentarios { get; set; }
+
+        public PessoaDto Pessoa { get; set; }
 
     }
 }

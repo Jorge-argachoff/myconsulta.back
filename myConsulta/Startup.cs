@@ -6,7 +6,11 @@ using System.Threading.Tasks;
 using Domain.Repositorios;
 using Domain.Services;
 using Infra;
+using Infra.Dapper;
 using Infra.Entities;
+using Infra.Interfaces;
+using Infra.Repositories;
+
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -43,11 +47,16 @@ namespace myConsulta
 
             services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TokenContext>().AddDefaultTokenProviders() ;
 
-            
+            //Infra
+            services.AddTransient<IConsultaRepository,ConsultaRepository>();
+            services.AddTransient<IConfiguracaoRepository, ConfiguracaoRepository>();
+            services.AddTransient<IPessoaRepository, PessoaRepository>();
 
-            services.AddScoped<IConsultaRepositorio, ConsultaServices>();
-            services.AddScoped<IPessoaRepositorio, PessoaServices>();
-            services.AddScoped<IConfiguracaoRepositorio, ConfiguracaoServices>();
+
+            //Domain
+            services.AddTransient<IConsultaService, ConsultaServices>();
+            services.AddTransient<IPessoaService, PessoaServices>();
+            services.AddTransient<IConfiguracaoService, ConfiguracaoServices>();
 
             //JWT
 

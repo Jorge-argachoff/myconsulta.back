@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.SqlClient;
 using System.Text;
 
-namespace Domain.Services
+namespace Infra.Dapper
 {
     public class ConsultaDb : IDisposable
     {

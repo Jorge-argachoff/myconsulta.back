@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain.Dtos
+namespace Application.Dtos
 {
     public class PessoaDto
     {

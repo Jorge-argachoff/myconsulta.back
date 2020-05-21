@@ -4,6 +4,7 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Dtos;
 using Domain.Dtos;
 using Infra.Entities;
 using Microsoft.AspNetCore.Authorization;
@@ -16,7 +17,7 @@ using Microsoft.IdentityModel.Tokens;
 namespace myConsulta.Controllers
 {   
     
-    [Route("api/[controller]")]
+    [Route("api/user")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -33,13 +34,14 @@ namespace myConsulta.Controllers
             this._appSettings = appSettings.Value;
         }
 
-        [HttpPost("user/register")]
+        [HttpPost("register")]
         public async Task<IActionResult> Registrar(RegisterUserDto registerUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
 
             var user = new IdentityUser
             {
+                
                 UserName = registerUserDto.Email,
                 Email = registerUserDto.Email,
                 EmailConfirmed = true
@@ -51,20 +53,25 @@ namespace myConsulta.Controllers
 
             await _signInManager.SignInAsync(user, false);
 
-            return Ok(await GerarJwt(registerUserDto.Email));
+            UserDto userDto = new UserDto();
+            userDto.Token = await GerarJwt(registerUserDto.Email);
+            return Ok(new { userDto });
+            
         }
 
-        [HttpPost("user/login")]
+        [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
 
             var result = await _signInManager.PasswordSignInAsync(loginUserDto.Email, loginUserDto.Password,false,true);
 
-
             if (result.Succeeded)
             {
-                return Ok(await GerarJwt(loginUserDto.Email));
+                UserDto user = new UserDto() { Email = loginUserDto.Email };
+                user.Token = await GerarJwt(loginUserDto.Email);
+                return Ok(new { user });
+
             }
             return BadRequest("Usuario ou senha invalidos");
         }

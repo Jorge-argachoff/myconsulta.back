@@ -2,21 +2,24 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Dtos;
 using Domain.Dtos;
 using Domain.Repositorios;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 
 namespace myConsulta.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class ConfiguracaoController : ControllerBase
     {
 
-        private readonly IConfiguracaoRepositorio _configuracaoServices;
+        private readonly IConfiguracaoService _configuracaoServices;
 
-        public ConfiguracaoController(IConfiguracaoRepositorio configuracaoServices)
+        public ConfiguracaoController(IConfiguracaoService configuracaoServices)
         {
             _configuracaoServices = configuracaoServices;
         }

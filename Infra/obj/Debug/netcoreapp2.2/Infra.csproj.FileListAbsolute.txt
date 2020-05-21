@@ -6,3 +6,6 @@ C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.AssemblyInfoInputs.ca
 C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.AssemblyInfo.cs
 C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.dll
 C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.pdb
+C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Application.dll
+C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Application.pdb
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.csproj.CopyComplete

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Application.Dtos;
 using Domain.Dtos;
 using Domain.Repositorios;
 using Domain.Services;
@@ -16,9 +17,9 @@ namespace myConsulta.Controllers
     [Route("api/[controller]")]
     public class ConsultaController : ControllerBase
     {
-        private readonly IConsultaRepositorio _consultaServices;
+        private readonly IConsultaService _consultaServices;
 
-        public ConsultaController(IConsultaRepositorio consultaServices)
+        public ConsultaController(IConsultaService consultaServices)
         {
             _consultaServices = consultaServices;
         }

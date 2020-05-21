@@ -1,12 +1,12 @@
-﻿using Domain.Dtos;
+﻿using Application.Dtos;
 using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Domain.Repositorios
+namespace Infra.Interfaces
 {
-    public interface IConfiguracaoRepositorio
+    public interface IConfiguracaoRepository
     {
         Task<IEnumerable<HorarioDto>> GetAllHours();
         Task<IEnumerable<NomeConsultaDto>> GetAllNomes();
@@ -17,7 +17,5 @@ namespace Domain.Repositorios
         Task deleteHorario(int id);
         Task deleteNome(int id);
         Task InactiveMedico(int id);
-
-
     }
 }

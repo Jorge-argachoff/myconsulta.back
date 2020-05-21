@@ -1,6 +1,8 @@
-﻿using Dapper;
+﻿using Application.Dtos;
+using Dapper;
 using Domain.Dtos;
 using Domain.Repositorios;
+using Infra.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -8,13 +10,13 @@ using System.Threading.Tasks;
 
 namespace Domain.Services
 {
-    public class PessoaServices : IPessoaRepositorio
+    public class PessoaServices : IPessoaService
     {
+        private readonly IPessoaRepository _pessoaRepository;
 
-        public ConsultaDb Db { get; set; }
-        public PessoaServices(ConsultaDb db = null)
+        public PessoaServices(IPessoaRepository pessoaRepository)
         {
-            Db = db;
+            _pessoaRepository = pessoaRepository;
         }
         public Task<IEnumerable<PessoaDto>> GetAll()
         {
@@ -23,24 +25,7 @@ namespace Domain.Services
 
         public async Task<PessoaDto> GetPessoaByCpf(string cpf)
         {
-            var query = @"SELECT Id
-                              ,Nome
-                              ,Sobrenome
-                              ,Endereco
-                              ,Numero
-                              ,Bairro
-                              ,Complemento
-                              ,CEP
-                              ,CPF
-                              ,RG
-                              ,Telefone
-                              ,DataNascimento
-                          FROM Tb_Pessoa
-                          WHERE CPF = @cpf";
-
-            var result = await Db.SqlConnection.QueryFirstOrDefaultAsync<PessoaDto>(query, new { cpf });
-
-            return result;
+            return await _pessoaRepository.GetPessoaByCpf(cpf);
         }
     }
 }
