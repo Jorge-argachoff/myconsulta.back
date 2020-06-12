@@ -20,5 +20,6 @@ namespace Domain.Repositorios
 
         Task CreateConsulta(ConsultaDto consulta);
 
+        Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id);
     }
 }

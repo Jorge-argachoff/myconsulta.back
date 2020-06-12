@@ -118,13 +118,7 @@ namespace Infra.Repositories
                       INNER JOIN Tb_Medico M ON M.Id = C.MedicoId                                             
                           WHERE C.Id = @id;
 
-                        SELECT Id
-                              ,ConsultaId
-                              ,Comentario
-                              ,Data
-                          FROM Tb_Comentario
-                          Where ConsultaId = @Id;
-
+                        
                         Select 
 						  PE.Id,Nome
 						 ,Sobrenome
@@ -145,13 +139,28 @@ namespace Infra.Repositories
 
             using (var multi = await Db.SqlConnection.QueryMultipleAsync(query, new { id }))
             {
-                var Consulta = await multi.ReadFirstOrDefaultAsync<ConsultaDto>();
-                Consulta.Comentarios = await multi.ReadAsync<ComentarioDto>();
+                var Consulta = await multi.ReadFirstOrDefaultAsync<ConsultaDto>();                
                 Consulta.Pessoa = await multi.ReadFirstOrDefaultAsync<PessoaDto>();
-
+                Consulta.Comentarios = await GetComentsByPersonId(Consulta.PessoaId);
 
                 return Consulta;
             }
+        }
+
+        public async  Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id)
+        {
+            var query = @" SELECT Id
+                                  ,ConsultaId
+                                  ,Comentario
+                                  ,Data
+		            	          ,PessoaId
+                             FROM Tb_Comentario						  
+		              WHERE ConsultaId = @id
+		              ORDER BY Data DESC";
+
+            var result = await Db.SqlConnection.QueryAsync<ComentarioDto>(query, new { id });
+
+            return result;
         }
     }
 }

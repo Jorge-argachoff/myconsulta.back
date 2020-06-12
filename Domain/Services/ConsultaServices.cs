@@ -25,6 +25,11 @@ namespace Domain.Services
            await _consultaRepository.CreateConsulta(consulta);
         }
 
+        public Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id)
+        {
+            return _consultaRepository.GetComentsByPersonId(id);
+        }
+
         public async Task<IEnumerable<ConsultaDto>> GetConsultasByCpf(string cpf)
         {
             return await _consultaRepository.GetConsultasByCpf(cpf);

@@ -33,7 +33,7 @@ namespace myConsulta
             Configuration = configuration;
         }
 
-        public IConfiguration Configuration { get; }
+        private readonly IConfiguration Configuration;
 
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
@@ -59,7 +59,7 @@ namespace myConsulta
             services.AddTransient<IConfiguracaoService, ConfiguracaoServices>();
 
             //JWT
-
+var existe = Configuration.GetSection("AppTokenSettings").Exists();
             var appSettingsSection = Configuration.GetSection("AppTokenSettings");
             services.Configure<AppSettings>(appSettingsSection);
 

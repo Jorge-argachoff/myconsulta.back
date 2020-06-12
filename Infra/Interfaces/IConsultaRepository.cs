@@ -19,5 +19,6 @@ namespace Infra.Interfaces
 
         Task CreateConsulta(ConsultaDto consulta);
 
+        Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id);
     }
 }
