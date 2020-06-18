@@ -20,6 +20,11 @@ namespace Domain.Services
             _consultaRepository = consultaRepository;
         }
 
+        public async Task CreateComentario(ComentarioDto comentario)
+        {
+            await _consultaRepository.CreateComentario(comentario);
+        }
+
         public async Task CreateConsulta(ConsultaDto consulta)
         {
            await _consultaRepository.CreateConsulta(consulta);

@@ -155,12 +155,36 @@ namespace Infra.Repositories
                                   ,Data
 		            	          ,PessoaId
                              FROM Tb_Comentario						  
-		              WHERE ConsultaId = @id
+		              WHERE PessoaId = @id
 		              ORDER BY Data DESC";
 
             var result = await Db.SqlConnection.QueryAsync<ComentarioDto>(query, new { id });
 
             return result;
+        }
+
+        public async Task CreateComentario(ComentarioDto comentario)
+        {
+             var parameters = new
+            {
+               ConsultaId = comentario.ConsultaId,
+               Comentario = comentario.Comentario,
+               Data = DateTime.Now,
+               PessoaId = comentario.PessoaId
+
+            };
+            var query = @"INSERT INTO Tb_Comentario
+                                        ([ConsultaId]
+                                        ,[Comentario]
+                                        ,[Data]
+                                        ,[PessoaId])
+                                    VALUES
+                                        (@ConsultaId
+                                        ,@Comentario
+                                        ,@Data
+                                        ,@PessoaId)";
+
+            await Db.SqlConnection.ExecuteAsync(query, parameters);
         }
     }
 }

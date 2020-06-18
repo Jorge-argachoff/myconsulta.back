@@ -72,7 +72,7 @@ namespace myConsulta.Controllers
         }
 
         [HttpGet]
-        [Route("get-data/{data}")]
+        [Route("consulta/{data}")]
         public async Task<IActionResult> getConsultasByData(string data)
         {
             try
@@ -96,6 +96,22 @@ namespace myConsulta.Controllers
                 if (consulta == null) { BadRequest("Model invalido"); }
 
                 await _consultaServices.CreateConsulta(consulta);
+                return Ok();
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex); }
+        }
+        [HttpPost]
+        [Route("comment")]
+        public async Task<IActionResult> PostComent([FromBody] ComentarioDto comentario)
+        {
+            try
+            {
+                if (comentario == null) { BadRequest("Model invalido"); }
+
+                await _consultaServices.CreateComentario(comentario);
+
                 return Ok();
 
             }
