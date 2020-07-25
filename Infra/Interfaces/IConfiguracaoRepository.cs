@@ -9,10 +9,10 @@ namespace Infra.Interfaces
     public interface IConfiguracaoRepository
     {
         Task<IEnumerable<HorarioDto>> GetAllHours();
-        Task<IEnumerable<NomeConsultaDto>> GetAllNomes();
+        Task<IEnumerable<EspecialidadeDto>> GetAllNomes();
         Task<IEnumerable<MedicoDto>> GetAllMedicos();
         Task CreateHorario(HorarioDto horario);
-        Task CreateNome(NomeConsultaDto nome);
+        Task CreateNome(EspecialidadeDto nome);
         Task CreateMedico(MedicoDto nome);
         Task deleteHorario(int id);
         Task deleteNome(int id);

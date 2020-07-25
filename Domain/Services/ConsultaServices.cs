@@ -8,6 +8,7 @@ using Dapper;
 using System.Linq;
 using Infra.Interfaces;
 using Application.Dtos;
+using Application.Enums;
 
 namespace Domain.Services
 {
@@ -20,13 +21,23 @@ namespace Domain.Services
             _consultaRepository = consultaRepository;
         }
 
+        public async Task CancelConsulta(int idConsulta)
+        {
+            await _consultaRepository.ChangeStatusConsulta(idConsulta,StatusConsultaEnum.Cancelada);
+        }
+
         public async Task CreateComentario(ComentarioDto comentario)
         {
+            if ( string.IsNullOrWhiteSpace(comentario.Comentario) 
+                ||comentario.Comentario.Length > 500) { throw new Exception("Comentario deve ter entre 1 até 500 caracteres."); }
+            
             await _consultaRepository.CreateComentario(comentario);
         }
 
         public async Task CreateConsulta(ConsultaDto consulta)
         {
+            if (consulta.Detalhes.Length > 800){throw new Exception("Detalhes mão pode conter mais de 800 caracteres. Caracteres digitados:"+ consulta.Detalhes.Length);}
+
            await _consultaRepository.CreateConsulta(consulta);
         }
 

@@ -42,5 +42,51 @@ namespace Infra.Repositories
 
             return result;
         }
+        public async Task CreatePessoa(PessoaDto pessoa)
+        {
+            var args = new{};
+            
+            var query = @"SELECT Id
+                              ,Nome
+                              ,Sobrenome
+                              ,Endereco
+                              ,Numero
+                              ,Bairro
+                              ,Complemento
+                              ,CEP
+                              ,CPF
+                              ,RG
+                              ,Telefone
+                              ,DataNascimento
+                          FROM Tb_Pessoa
+                          WHERE CPF = @cpf";
+
+            await Db.SqlConnection.QueryFirstOrDefaultAsync<PessoaDto>(query, args);
+
+            
+        }
+
+        public async Task<PessoaDto> GetPessoaByIdConsulta(int idConsulta)
+        {
+            var query = @"SELECT P.Id
+                              ,Nome
+                              ,Sobrenome
+                              ,Endereco
+                              ,Numero
+                              ,Bairro
+                              ,Complemento
+                              ,CEP
+                              ,CPF
+                              ,RG
+                              ,Telefone
+                              ,DataNascimento
+                          FROM Tb_Pessoa P
+						  join dbo.Tb_Consulta C on C.PessoaId = P.Id
+						  Where C.Id = @idConsulta";
+
+            var result = await Db.SqlConnection.QueryFirstOrDefaultAsync<PessoaDto>(query, new { idConsulta });
+
+            return result;
+        }
     }
 }

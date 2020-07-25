@@ -1,5 +1,5 @@
 ﻿using Application.Dtos;
-
+using Application.Enums;
 using System;
 using System.Collections.Generic;
 using System.Text;
@@ -18,6 +18,7 @@ namespace Infra.Interfaces
         Task<IEnumerable<ConsultaDto>> GetNextConsultas();
 
         Task CreateConsulta(ConsultaDto consulta);
+        Task ChangeStatusConsulta(int idConsulta , StatusConsultaEnum status );
 
         Task CreateComentario(ComentarioDto comentario);
 

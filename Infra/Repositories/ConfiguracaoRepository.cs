@@ -22,22 +22,22 @@ namespace Infra.Repositories
         public async Task<IEnumerable<HorarioDto>> GetAllHours()
         {
             var query = @"SELECT Id,
-                    	  Horario
+                    	  Hora
                       FROM Tb_Horario                                            
-                      Order by Horario";
+                      Order by Hora";
 
             var result = await Db.SqlConnection.QueryAsync<HorarioDto>(query);
 
-            return result.GroupBy(x => x.Horario).Select(y => y.First());
+            return result.GroupBy(x => x.Hora).Select(y => y.First());
         }
-        public async Task<IEnumerable<NomeConsultaDto>> GetAllNomes()
+        public async Task<IEnumerable<EspecialidadeDto>> GetAllNomes()
         {
             var query = @"SELECT Id,
                     	  Nome
-                      FROM Tb_NomeConsulta                                            
+                      FROM Tb_Especialidade                                            
                       Order by Nome";
 
-            var result = await Db.SqlConnection.QueryAsync<NomeConsultaDto>(query);
+            var result = await Db.SqlConnection.QueryAsync<EspecialidadeDto>(query);
 
             return result;
         }
@@ -63,16 +63,16 @@ namespace Infra.Repositories
         public async Task CreateHorario(HorarioDto horario)
         {
 
-            var query = @"INSERT INTO Tb_Horario(Horario)
-                            VALUES(@horario)";
+            var query = @"INSERT INTO Tb_Horario(Hora,DataCriacao)
+                            VALUES(@Hora,@DataCriacao)";
 
-            await Db.SqlConnection.ExecuteAsync(query, new { horario = horario.Horario });
+            await Db.SqlConnection.ExecuteAsync(query, new { Hora = horario.Hora, DataCriacao = DateTime.Now });
 
         }
 
-        public async Task CreateNome(NomeConsultaDto nome)
+        public async Task CreateNome(EspecialidadeDto nome)
         {
-            var query = @"INSERT INTO Tb_NomeConsulta(Nome)
+            var query = @"INSERT INTO Tb_Especialidade(Nome)
                             VALUES(@Nome)";
 
             await Db.SqlConnection.ExecuteAsync(query, new { nome.Nome });
@@ -90,7 +90,7 @@ namespace Infra.Repositories
 
         public async Task deleteNome(int id)
         {
-            var query = @"DELETE FROM Tb_NomeConsulta
+            var query = @"DELETE FROM Tb_Especialidade
                             WHERE Id = @id";
 
             await Db.SqlConnection.ExecuteAsync(query, new { id });

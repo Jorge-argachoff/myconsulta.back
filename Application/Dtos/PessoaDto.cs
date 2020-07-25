@@ -28,5 +28,7 @@ namespace Application.Dtos
 
         public DateTime DataNascimento { get; set; }
 
+        public string Complemento { get; set; }
+
     }   
 }

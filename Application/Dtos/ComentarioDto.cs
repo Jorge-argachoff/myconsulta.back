@@ -15,5 +15,7 @@ namespace Application.Dtos
         public DateTime Data { get; set; }
 
         public int PessoaId { get; set; }
+
+        public string EscritoPor { get; set; }
     }
 }

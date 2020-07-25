@@ -35,7 +35,7 @@ namespace myConsulta.Controllers
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
         // GET: api/Consulta/
@@ -51,7 +51,7 @@ namespace myConsulta.Controllers
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
         // GET: api/Consulta/
@@ -68,7 +68,7 @@ namespace myConsulta.Controllers
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
         [HttpGet]
@@ -84,7 +84,7 @@ namespace myConsulta.Controllers
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
         // POST: api/Consulta
@@ -100,7 +100,7 @@ namespace myConsulta.Controllers
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
         [HttpPost]
         [Route("comment")]
@@ -108,7 +108,7 @@ namespace myConsulta.Controllers
         {
             try
             {
-                if (comentario == null) { BadRequest("Model invalido"); }
+                if (comentario == null) BadRequest("Comentario invalido");
 
                 await _consultaServices.CreateComentario(comentario);
 
@@ -116,7 +116,23 @@ namespace myConsulta.Controllers
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
+        }
+
+
+        [HttpGet]
+        [Route("{id}/comments")]
+        public async Task<IActionResult> GetCommentsByPersonId(int id)
+        {
+            try
+            {
+                var comments = await _consultaServices.GetComentsByPersonId(id);
+
+                return Ok(comments);
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex.Message); }
         }
 
         // PUT: api/Consulta/5
@@ -125,10 +141,23 @@ namespace myConsulta.Controllers
         {
         }
 
-        // DELETE: api/ApiWithActions/5
-        [HttpDelete("{id}")]
-        public void Delete(int id)
+        
+        [HttpPut]
+        [Route("cancel")]
+        public async Task<IActionResult> CancelConsulta([FromBody]int id)
         {
+            try
+            {
+                if(id < 1)BadRequest("Id Invalido");
+
+                await _consultaServices.CancelConsulta(id);
+
+                return Ok();
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex.Message); }
+
         }
     }
 }

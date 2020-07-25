@@ -26,7 +26,7 @@ namespace Domain.Services
             
             return await _configuracaoRepository.GetAllHours();
         }
-        public async Task<IEnumerable<NomeConsultaDto>> GetAllNomes()
+        public async Task<IEnumerable<EspecialidadeDto>> GetAllEspecialidades()
         {
             return await _configuracaoRepository.GetAllNomes();
         }
@@ -47,7 +47,7 @@ namespace Domain.Services
 
         }         
 
-        public async Task CreateNome(NomeConsultaDto nome)
+        public async Task CreateNome(EspecialidadeDto nome)
         {
             await _configuracaoRepository.CreateNome(nome);
         }

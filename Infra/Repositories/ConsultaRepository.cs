@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Enums;
 
 namespace Infra.Repositories
 {
@@ -24,17 +25,19 @@ namespace Infra.Repositories
 
             var query = @"SELECT C.Id
                     	  ,P.Nome
-                          ,PessoaId                          
+                          ,C.PessoaId                          
                           ,Detalhes
                           ,DataConsulta
-                          ,DataCriacao
+                          ,C.DataCriacao
                           ,Hora
                           ,MedicoId
                           ,M.Nome as Medico
+                          ,C.Status
                       FROM Tb_Consulta C
                       INNER JOIN Tb_Pessoa P ON P.Id = C.PessoaId
                       INNER JOIN Tb_Medico M ON M.Id = C.MedicoId
-                      WHERE DataConsulta >= @DataDeHoje                                                                                                                                     
+                      WHERE DataConsulta >= @DataDeHoje
+                      AND C.Status = 'Ativa'                                                                                                                                 
                       Order by DataConsulta,Hora";
 
             var result = await Db.SqlConnection.QueryAsync<ConsultaDto>(query, parameters);
@@ -68,7 +71,8 @@ namespace Infra.Repositories
                 DataConsulta = consulta.DataConsulta,
                 DataCriacao = DateTime.Now,
                 Hora = consulta.Hora,
-                MedicoId = consulta.MedicoId
+                MedicoId = consulta.MedicoId,
+                Status = StatusConsultaEnum.Ativa.ToString()   
             };
             var query = @"INSERT INTO Tb_Consulta
                                ([PessoaId]                               
@@ -76,9 +80,10 @@ namespace Infra.Repositories
                                ,[DataConsulta]
                                ,[DataCriacao]
                                ,[Hora]                               
-                               ,[MedicoId])
+                               ,[MedicoId]
+                               ,[Status])
                          VALUES
-                               (@PessoaId,@Detalhes,@DataConsulta,@DataCriacao,@Hora,@MedicoId)";
+                               (@PessoaId,@Detalhes,@DataConsulta,@DataCriacao,@Hora,@MedicoId,@Status)";
 
             await Db.SqlConnection.ExecuteAsync(query, parameters);
 
@@ -139,7 +144,7 @@ namespace Infra.Repositories
 
             using (var multi = await Db.SqlConnection.QueryMultipleAsync(query, new { id }))
             {
-                var Consulta = await multi.ReadFirstOrDefaultAsync<ConsultaDto>();                
+                var Consulta = await multi.ReadFirstOrDefaultAsync<ConsultaDto>();
                 Consulta.Pessoa = await multi.ReadFirstOrDefaultAsync<PessoaDto>();
                 Consulta.Comentarios = await GetComentsByPersonId(Consulta.PessoaId);
 
@@ -147,13 +152,14 @@ namespace Infra.Repositories
             }
         }
 
-        public async  Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id)
+        public async Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id)
         {
             var query = @" SELECT Id
                                   ,ConsultaId
                                   ,Comentario
                                   ,Data
 		            	          ,PessoaId
+                                  ,EscritoPor
                              FROM Tb_Comentario						  
 		              WHERE PessoaId = @id
 		              ORDER BY Data DESC";
@@ -165,26 +171,44 @@ namespace Infra.Repositories
 
         public async Task CreateComentario(ComentarioDto comentario)
         {
-             var parameters = new
+            var parameters = new
             {
-               ConsultaId = comentario.ConsultaId,
-               Comentario = comentario.Comentario,
-               Data = DateTime.Now,
-               PessoaId = comentario.PessoaId
+                ConsultaId = comentario.ConsultaId,
+                Comentario = comentario.Comentario,
+                Data = DateTime.Now,
+                PessoaId = comentario.PessoaId,
+                EscritoPor = comentario.EscritoPor
 
             };
             var query = @"INSERT INTO Tb_Comentario
                                         ([ConsultaId]
                                         ,[Comentario]
                                         ,[Data]
-                                        ,[PessoaId])
+                                        ,[PessoaId]
+                                        ,[EscritoPor])
                                     VALUES
                                         (@ConsultaId
                                         ,@Comentario
                                         ,@Data
-                                        ,@PessoaId)";
+                                        ,@PessoaId
+                                        ,@EscritoPor)";
 
             await Db.SqlConnection.ExecuteAsync(query, parameters);
+        }
+
+        public async Task ChangeStatusConsulta(int idConsulta, StatusConsultaEnum status)
+        {
+            var parameters = new
+            {
+                Id = idConsulta,
+                Status = status.ToString()
+            };
+            var query = @"UPDATE Tb_Consulta
+                            SET Status = @Status
+                            WHERE Id = @Id";
+
+            await Db.SqlConnection.ExecuteAsync(query, parameters);
+
         }
     }
 }

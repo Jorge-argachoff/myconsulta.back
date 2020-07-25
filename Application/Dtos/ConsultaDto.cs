@@ -28,5 +28,7 @@ namespace Application.Dtos
 
         public PessoaDto Pessoa { get; set; }
 
+        public string Status { get; set; }
+
     }
 }

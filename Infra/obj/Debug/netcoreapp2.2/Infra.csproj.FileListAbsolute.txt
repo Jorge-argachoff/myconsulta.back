@@ -9,3 +9,5 @@ C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.pdb
 C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Application.dll
 C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Application.pdb
 C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.csproj.CopyComplete
+C:\Projetos\myConsulta\infra\bin\Debug\netcoreapp2.2\Infra.runtimeconfig.json
+C:\Projetos\myConsulta\infra\bin\Debug\netcoreapp2.2\Infra.runtimeconfig.dev.json

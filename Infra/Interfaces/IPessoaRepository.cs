@@ -10,6 +10,8 @@ namespace Infra.Interfaces
     {
         Task<PessoaDto> GetPessoaByCpf(string cpf);
 
+        Task CreatePessoa(PessoaDto pessoa);
         Task<IEnumerable<PessoaDto>> GetAll();
+        Task<PessoaDto> GetPessoaByIdConsulta(int idConsulta);
     }
 }

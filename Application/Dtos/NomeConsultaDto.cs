@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Application.Dtos
 {
-    public class NomeConsultaDto
+    public class EspecialidadeDto
     {
 
         public int Id { get; set; }

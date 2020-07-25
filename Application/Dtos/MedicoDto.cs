@@ -11,5 +11,7 @@ namespace Application.Dtos
         public string Nome { get; set; }
 
         public bool Ativo { get; set; }
+
+        public int PessoaId { get; set; }
     }
 }

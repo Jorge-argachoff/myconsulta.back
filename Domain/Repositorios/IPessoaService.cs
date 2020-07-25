@@ -12,5 +12,8 @@ namespace Domain.Repositorios
         Task<PessoaDto> GetPessoaByCpf(string cpf);
 
         Task<IEnumerable<PessoaDto>> GetAll();
+
+        Task CreatePessoa(PessoaDto pessoa);
+        Task<PessoaDto> GetPessoaByIdConsulta(int idConsulta);
     }
 }

@@ -15,6 +15,10 @@ namespace Domain.Dtos
         public string Password { get; set; }
         [Compare("Password",ErrorMessage ="As senhas não conferem.")]
         public string ConfirmPassword { get; set; }
+
+        public int PessoaId { get; set; }
+
+        public string Role { get; set; }
     }
 
     public class LoginUserDto
@@ -23,5 +27,12 @@ namespace Domain.Dtos
         public string Email { get; set; }
         [Required(ErrorMessage = "Campo obrigatorio.")]
         public string Password { get; set; }
+    }
+
+    public class RoleDto
+    {
+        [Required(ErrorMessage = "Campo obrigatorio.")]
+        public string Name { get; set; }
+      
     }
 }

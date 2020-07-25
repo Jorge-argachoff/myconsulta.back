@@ -21,6 +21,8 @@ namespace Domain.Repositorios
         Task CreateConsulta(ConsultaDto consulta);
          Task CreateComentario(ComentarioDto comentario);
 
+         Task CancelConsulta(int idConsulta);
+
         Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id);
     }
 }

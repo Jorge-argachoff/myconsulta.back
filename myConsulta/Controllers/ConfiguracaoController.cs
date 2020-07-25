@@ -32,15 +32,15 @@ namespace myConsulta.Controllers
             {
                 var horarios = await _configuracaoServices.GetAllHours();                
 
-                var nomesConsulta = await _configuracaoServices.GetAllNomes();
+                var especialidade = await _configuracaoServices.GetAllEspecialidades();
 
                 var medicos = await _configuracaoServices.GetAllMedicos();
 
-                return Ok(new { horarios, nomesConsulta , medicos});
+                return Ok(new { horarios, especialidade , medicos});
 
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
 
@@ -58,11 +58,11 @@ namespace myConsulta.Controllers
                 return Ok();
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
         [HttpPost]
         [Route("add-nome")]
-        public async Task<IActionResult> AddName([FromBody] NomeConsultaDto nome)
+        public async Task<IActionResult> AddName([FromBody] EspecialidadeDto nome)
         {
             try
             {
@@ -73,7 +73,7 @@ namespace myConsulta.Controllers
                 return Ok();
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
         [HttpPost]
@@ -89,7 +89,7 @@ namespace myConsulta.Controllers
                 return Ok();
             }
             catch (Exception ex)
-            { return BadRequest(ex); }
+            { return BadRequest(ex.Message); }
         }
 
         // PUT: api/Configuracao/5
@@ -110,7 +110,7 @@ namespace myConsulta.Controllers
                 _configuracaoServices.deleteHorario(id);               
             }
             catch (Exception ex)
-            { BadRequest(ex); }
+            { BadRequest(ex.Message); }
         }
 
         [HttpDelete]
@@ -124,7 +124,7 @@ namespace myConsulta.Controllers
                 _configuracaoServices.deleteNome(id);
             }
             catch (Exception ex)
-            { BadRequest(ex); }
+            { BadRequest(ex.Message); }
         }
 
         [HttpPut]
@@ -140,7 +140,7 @@ namespace myConsulta.Controllers
                 return Ok();
             }
             catch (Exception ex)
-            {return BadRequest(ex); }
+            {return BadRequest(ex.Message); }
         }
     }
 }

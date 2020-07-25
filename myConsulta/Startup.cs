@@ -5,7 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using Domain.Repositorios;
 using Domain.Services;
-using Infra;
+
+using Infra.Context;
 using Infra.Dapper;
 using Infra.Entities;
 using Infra.Interfaces;
@@ -18,6 +19,7 @@ using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
@@ -41,14 +43,18 @@ namespace myConsulta
             services.AddCors();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
+            services.AddTransient(_ => new ConsultaDb(Configuration.GetConnectionString("IdentityConnection")));
             services.AddTransient(_ => new ConsultaDb(Configuration.GetConnectionString("SqlServerConnection")));
 
-            services.AddDbContext<TokenContext>(options => options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
+            services.AddDbContext<TokenContext>(options => options.UseMySql(Configuration.GetConnectionString("IdentityConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TokenContext>().AddDefaultTokenProviders() ;
+            services.AddEntityFrameworkSqlServer().AddDbContext<ApplicationContext>(options =>
+                 options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
+
+            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TokenContext>().AddDefaultTokenProviders();
 
             //Infra
-            services.AddTransient<IConsultaRepository,ConsultaRepository>();
+            services.AddTransient<IConsultaRepository, ConsultaRepository>();
             services.AddTransient<IConfiguracaoRepository, ConfiguracaoRepository>();
             services.AddTransient<IPessoaRepository, PessoaRepository>();
 
@@ -59,18 +65,20 @@ namespace myConsulta
             services.AddTransient<IConfiguracaoService, ConfiguracaoServices>();
 
             //JWT
-var existe = Configuration.GetSection("AppTokenSettings").Exists();
+            var existe = Configuration.GetSection("AppTokenSettings").Exists();
             var appSettingsSection = Configuration.GetSection("AppTokenSettings");
             services.Configure<AppSettings>(appSettingsSection);
 
             var appsSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appsSettings.Secret);
 
-            services.AddAuthentication(x => {
+            services.AddAuthentication(x =>
+            {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-            
-            }).AddJwtBearer(x=> {
+
+            }).AddJwtBearer(x =>
+            {
 
                 x.RequireHttpsMetadata = true;
                 x.SaveToken = true;
@@ -81,19 +89,19 @@ var existe = Configuration.GetSection("AppTokenSettings").Exists();
                     ValidateIssuer = true,
                     ValidAudience = appsSettings.ValidoEm,
                     ValidIssuer = appsSettings.Emissor
-                
+
                 };
-            
+
             });
 
             services.Configure<IdentityOptions>(options =>
             {
-                options.Password.RequireDigit = false;                
-                options.Password.RequireLowercase = false;                
-                options.Password.RequireUppercase = false;               
+                options.Password.RequireDigit = false;
+                options.Password.RequireLowercase = false;
+                options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
 
-                
+
             });
 
         }
@@ -110,6 +118,7 @@ var existe = Configuration.GetSection("AppTokenSettings").Exists();
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
 
             app.UseHttpsRedirection();
             app.UseCors(builder => builder
@@ -117,8 +126,8 @@ var existe = Configuration.GetSection("AppTokenSettings").Exists();
                              .AllowAnyMethod()
                              .AllowAnyHeader()
                              .AllowCredentials());
-            
-            
+
+
             app.UseAuthentication();
             app.UseMvc();
         }

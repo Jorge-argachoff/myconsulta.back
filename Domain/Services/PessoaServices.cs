@@ -18,6 +18,12 @@ namespace Domain.Services
         {
             _pessoaRepository = pessoaRepository;
         }
+
+        public async Task CreatePessoa(PessoaDto pessoa)
+        {
+            await _pessoaRepository.CreatePessoa(pessoa);
+        }
+
         public Task<IEnumerable<PessoaDto>> GetAll()
         {
             throw new NotImplementedException();
@@ -26,6 +32,10 @@ namespace Domain.Services
         public async Task<PessoaDto> GetPessoaByCpf(string cpf)
         {
             return await _pessoaRepository.GetPessoaByCpf(cpf);
+        }
+        public async Task<PessoaDto> GetPessoaByIdConsulta(int idConsulta)
+        {
+            return await _pessoaRepository.GetPessoaByIdConsulta(idConsulta);
         }
     }
 }
