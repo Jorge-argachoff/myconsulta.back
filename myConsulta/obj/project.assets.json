@@ -4781,6 +4781,8 @@
           "Application": "1.0.0",
           "Dapper": "2.0.30",
           "Infra": "1.0.0",
+          "Microsoft.AspNetCore.Identity.EntityFrameworkCore": "2.2.0",
+          "Microsoft.EntityFrameworkCore": "2.2.6",
           "Microsoft.EntityFrameworkCore.SqlServer": "2.2.6",
           "System.Data.SqlClient": "4.8.0"
         },

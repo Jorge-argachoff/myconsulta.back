@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Infra.Repositories
 {
-    public class PessoaRepository:IPessoaRepository
+    public class PessoaRepository : IPessoaRepository
     {
         public ConsultaDb Db { get; set; }
         public PessoaRepository(ConsultaDb db = null)
@@ -42,26 +42,68 @@ namespace Infra.Repositories
 
             return result;
         }
-        public async Task CreatePessoa(PessoaDto pessoa)
-        {
-            var args = new{};
-            
-            var query = @"SELECT Id
-                              ,Nome
-                              ,Sobrenome
-                              ,Endereco
-                              ,Numero
-                              ,Bairro
-                              ,Complemento
-                              ,CEP
-                              ,CPF
-                              ,RG
-                              ,Telefone
-                              ,DataNascimento
-                          FROM Tb_Pessoa
-                          WHERE CPF = @cpf";
 
-            await Db.SqlConnection.QueryFirstOrDefaultAsync<PessoaDto>(query, args);
+         public async Task<int> CreatePessoa(PessoaDto pessoa)
+        {
+            
+                var args = new
+                {
+                    DataCriacao = DateTime.UtcNow
+                    ,
+                    Nome = pessoa.Nome
+                    ,
+                    Sobrenome = pessoa.Sobrenome
+                    ,
+                    Endereco = pessoa.Endereco
+                    ,
+                    Numero = pessoa.Numero
+                    ,
+                    Bairro = pessoa.Bairro
+                    ,
+                    CPF = pessoa.CPF
+                    ,
+                    CEP = pessoa.CEP
+                    ,
+                    RG = pessoa.RG
+                    ,
+                    Telefone = pessoa.Telefone
+                    ,
+                    DataNascimento = pessoa.DataNascimento
+                    ,
+                    Complemento = pessoa.Complemento
+                };
+
+                var query = @"INSERT INTO Tb_Pessoa
+                            ([DataCriacao]
+                            ,[Nome]
+                            ,[Sobrenome]
+                            ,[Endereco]
+                            ,[Numero]
+                            ,[Bairro]
+                            ,[CPF]
+                            ,[CEP]
+                            ,[RG]
+                            ,[Telefone]
+                            ,[DataNascimento]
+                            ,[Complemento])
+                        VALUES
+                            (@DataCriacao
+                            ,@Nome
+                            ,@Sobrenome
+                            ,@Endereco
+                            ,@Numero
+                            ,@Bairro
+                            ,@CPF
+                            ,@CEP
+                            ,@RG
+                            ,@Telefone
+                            ,@DataNascimento
+                            ,@Complemento);
+                            SELECT SCOPE_IDENTITY()";
+
+                var id = await Db.SqlConnection.QueryFirstOrDefaultAsync<int>(query, args);
+                
+                return id ;
 
             
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Application.Dtos;
 using Domain.Repositorios;
 using Domain.Services;
 
@@ -51,19 +52,23 @@ namespace myConsulta
             services.AddEntityFrameworkSqlServer().AddDbContext<ApplicationContext>(options =>
                  options.UseSqlServer(Configuration.GetConnectionString("SqlServerConnection")));
 
-            services.AddDefaultIdentity<IdentityUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TokenContext>().AddDefaultTokenProviders();
+            services.AddDefaultIdentity<ApplicationUser>().AddRoles<IdentityRole>().AddEntityFrameworkStores<TokenContext>().AddDefaultTokenProviders();
 
             //Infra
             services.AddTransient<IConsultaRepository, ConsultaRepository>();
             services.AddTransient<IConfiguracaoRepository, ConfiguracaoRepository>();
             services.AddTransient<IPessoaRepository, PessoaRepository>();
+            
 
 
             //Domain
             services.AddTransient<IConsultaService, ConsultaServices>();
             services.AddTransient<IPessoaService, PessoaServices>();
             services.AddTransient<IConfiguracaoService, ConfiguracaoServices>();
+            services.AddTransient<IEmailService, EmailService>();
+            services.AddTransient<IUserService, UserService>();
 
+            services.Configure<EmailSettings>(Configuration.GetSection("EmailSettings"));
             //JWT
             var existe = Configuration.GetSection("AppTokenSettings").Exists();
             var appSettingsSection = Configuration.GetSection("AppTokenSettings");
@@ -118,6 +123,7 @@ namespace myConsulta
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+            
             
 
             app.UseHttpsRedirection();

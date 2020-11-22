@@ -16,9 +16,19 @@ namespace Domain.Dtos
         [Compare("Password",ErrorMessage ="As senhas não conferem.")]
         public string ConfirmPassword { get; set; }
 
-        public int PessoaId { get; set; }
+       public string Nome { get; set; }
+
+       public string Sobrenome { get; set; }
+
+       public string Cpf { get; set; }
+
+       public string Celular { get; set; }
+
+       public string DDD { get; set; }
 
         public string Role { get; set; }
+
+        public DateTime DataNascimento { get; set; }
     }
 
     public class LoginUserDto

@@ -14,7 +14,7 @@ namespace Infra.Context
 
         protected override void OnModelCreating(ModelBuilder model)
         {
-
+            
 
             model.ApplyConfiguration(new PessoaMapper());
             model.ApplyConfiguration(new ConsultaMapper());
@@ -22,7 +22,8 @@ namespace Infra.Context
             model.ApplyConfiguration(new MedicoMapper());
             model.ApplyConfiguration(new HorarioMapper());
             model.ApplyConfiguration(new EspecialidadeMapper());
-            
+
+                        
 
 
         }

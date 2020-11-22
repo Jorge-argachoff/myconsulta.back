@@ -42,9 +42,7 @@ namespace Domain.Services
 
         public async Task CreateHorario(HorarioDto horario)
         {
-
             await _configuracaoRepository.CreateHorario(horario);
-
         }         
 
         public async Task CreateNome(EspecialidadeDto nome)

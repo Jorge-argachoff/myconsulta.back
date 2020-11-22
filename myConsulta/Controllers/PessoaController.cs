@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Dtos;
 using Domain.Repositorios;
+using Infra.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
@@ -16,20 +17,25 @@ namespace myConsulta.Controllers
     [ApiController]
     public class PessoaController : ControllerBase
     {
-
         private readonly IPessoaService _pessoaServices;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly IUserService userService;
+        private readonly UserManager<ApplicationUser> _userManager;
 
-        public PessoaController(IPessoaService pessoaServices, RoleManager<IdentityRole> roleManager)
+        public PessoaController(IPessoaService pessoaServices,
+        RoleManager<IdentityRole> roleManager,
+         IUserService userService)
         {
             _pessoaServices = pessoaServices;
             this._roleManager = roleManager;
+            this.userService = userService;
         }
         // GET: api/Pessoa
-         [HttpGet("form-data")]
-        public async Task<IActionResult> GetFormData()
-        {
-            var roles = _roleManager.Roles.ToList();
+        [AllowAnonymous]
+        [HttpGet("form-data/{email}")]
+        public async Task<IActionResult> GetFormData(string email)
+        {            
+            var roles = await this.userService.ObterPermissoes(email);
 
             return Ok(roles);
         }
@@ -69,7 +75,7 @@ namespace myConsulta.Controllers
         [HttpPost]
         public async Task<IActionResult> Post([FromBody] PessoaDto pessoa)
         {
-             try
+            try
             {
                 if (pessoa == null) { BadRequest("Model invalido"); }
 

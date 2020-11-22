@@ -6,6 +6,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Application.Dtos;
 using Domain.Dtos;
+using Domain.Repositorios;
 using Infra.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -16,23 +17,30 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace myConsulta.Controllers
 {
-
+    
     [Route("api/user")]
     [ApiController]
     public class AuthController : ControllerBase
     {
-        private readonly SignInManager<IdentityUser> _signInManager;
-        private readonly UserManager<IdentityUser> _userManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly UserManager<ApplicationUser> _userManager;
 
         private readonly AppSettings _appSettings;
         private readonly RoleManager<IdentityRole> roleManager;
+        private readonly IUserService userService;
+        private readonly IEmailService emailSender;
 
-        public AuthController(SignInManager<IdentityUser> signInManager,
-            UserManager<IdentityUser> userManager,
+        public AuthController(
+            SignInManager<ApplicationUser> signInManager,
+            UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
-            IOptions<AppSettings> appSettings)
+            IOptions<AppSettings> appSettings,
+            IUserService userService,
+            IEmailService emailSender)
         {
             this.roleManager = roleManager;
+            this.userService = userService;
+            this.emailSender = emailSender;
             this._signInManager = signInManager;
             this._userManager = userManager;
             this._appSettings = appSettings.Value;
@@ -45,25 +53,34 @@ namespace myConsulta.Controllers
             {
 
                 if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
+                
+                var pessoaId = await userService.AddPessoa(registerUserDto);
 
-                var user = new IdentityUser
-                {
-
-                    UserName = registerUserDto.Email,
-                    Email = registerUserDto.Email,
-                    EmailConfirmed = true
-                };
+                        var user = new ApplicationUser
+                        {
+                            PessoaId = pessoaId,
+                            UserName = registerUserDto.Email,
+                            Email = registerUserDto.Email,
+                            EmailConfirmed = false
+                        };
 
                 var result = await _userManager.CreateAsync(user, registerUserDto.Password);
-
+               
                 if (!result.Succeeded) return BadRequest(result.Errors);
-                var identityuser = await _userManager.FindByEmailAsync(user.Email);
 
-                if (registerUserDto.Role == null)
+                var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+
+               string confirmationLink = Url.Action("ConfirmEmail", 
+              "Auth", new { userid = user.Id, 
+               token = confirmationToken }, 
+               Request.Scheme);
+
+                await emailSender.SendConfirmationEmailAsync(registerUserDto.Email, "Confirme seu cadastro", "",confirmationLink);
+                
+                if ( string.IsNullOrEmpty(registerUserDto.Role))
                     await _userManager.AddToRoleAsync(user, "User");
                 else
-                {
-                    
+                {                    
                     bool x = await roleManager.RoleExistsAsync(registerUserDto.Role);
                     if (x)
                         await _userManager.AddToRoleAsync(user, registerUserDto.Role);
@@ -79,18 +96,60 @@ namespace myConsulta.Controllers
             }
             catch (System.Exception ex)
             {
-
-                throw;
+                return BadRequest(ex.Message);
             }
         }
+
+        [AllowAnonymous]
+        [HttpGet("confirm")]
+        public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto confirm)
+        {
+            if (confirm == null 
+                || string.IsNullOrEmpty(confirm.UserId)  
+                || string.IsNullOrEmpty(confirm.Token))
+            {
+                return BadRequest("Dados Invalidos");
+            }
+
+            var user = await _userManager.FindByIdAsync(confirm.UserId);
+            
+            if(await _userManager.IsEmailConfirmedAsync(user))
+            {
+                return BadRequest("Email já confirmado");
+            }
+
+            if (user == null)
+            {
+                return BadRequest("Usuario nao encontrado");
+            }
+
+
+            var result = await _userManager.ConfirmEmailAsync(user,confirm.Token);
+            
+            if (result.Succeeded)
+            {
+                return Ok("Confirmado com sucesso");
+            }
+
+            return BadRequest("Email não confirmado");
+            
+        }
+
+
 
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
         {
             if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
 
-            var result = await _signInManager.PasswordSignInAsync(loginUserDto.Email, loginUserDto.Password, false, true);
+            var userMan = await _userManager.FindByEmailAsync(loginUserDto.Email);
 
+            if (userMan != null && !userMan.EmailConfirmed )
+            {
+                return BadRequest("Email não confirmado, entre no seu email para confirmar.");
+            }
+
+            var result = await _signInManager.PasswordSignInAsync(loginUserDto.Email, loginUserDto.Password, false, true);
 
             if (result.Succeeded)
             {

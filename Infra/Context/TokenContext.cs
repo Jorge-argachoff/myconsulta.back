@@ -7,7 +7,7 @@ using Microsoft.EntityFrameworkCore.Design;
 
 namespace Infra.Context
 {
-    public class TokenContext : IdentityDbContext
+    public class TokenContext : IdentityDbContext<ApplicationUser>
     {
 
         public TokenContext(DbContextOptions<TokenContext> options) : base(options)
@@ -16,10 +16,7 @@ namespace Infra.Context
         }
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-
             base.OnModelCreating(modelBuilder);
-
         }
 
 
