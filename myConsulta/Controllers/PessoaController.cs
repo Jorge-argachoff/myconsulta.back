@@ -55,6 +55,19 @@ namespace myConsulta.Controllers
             catch (Exception ex)
             { return BadRequest(ex.Message); }
         }
+        [HttpGet]
+        public async Task<IActionResult> GetPessoas()
+        {
+            try
+            {
+                
+                var pessoas = await _pessoaServices.GetAll();
+                return Ok(pessoas);
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex.Message); }
+        }
 
         [HttpGet("{id}/edit")]
         public async Task<IActionResult> GetPessoaByIdConsulta(int? id)

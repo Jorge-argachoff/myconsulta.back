@@ -20,6 +20,7 @@ namespace Domain.Repositorios
 
         Task CreateConsulta(ConsultaDto consulta);
          Task CreateComentario(ComentarioDto comentario);
+         Task<bool> sendMessage(ComentarioDto comentario);
 
          Task CancelConsulta(int idConsulta);
 

@@ -9,6 +9,7 @@ using System.Linq;
 using Infra.Interfaces;
 using Application.Dtos;
 using Application.Enums;
+using RabbitMQ.Client;
 
 namespace Domain.Services
 {
@@ -23,22 +24,22 @@ namespace Domain.Services
 
         public async Task CancelConsulta(int idConsulta)
         {
-            await _consultaRepository.ChangeStatusConsulta(idConsulta,StatusConsultaEnum.Cancelada);
+            await _consultaRepository.ChangeStatusConsulta(idConsulta, StatusConsultaEnum.Cancelada);
         }
 
         public async Task CreateComentario(ComentarioDto comentario)
         {
-            if ( string.IsNullOrWhiteSpace(comentario.Comentario) 
-                ||comentario.Comentario.Length > 500) { throw new Exception("Comentario deve ter entre 1 até 500 caracteres."); }
-            
+            if (string.IsNullOrWhiteSpace(comentario.Comentario)
+                || comentario.Comentario.Length > 500) { throw new Exception("Comentario deve ter entre 1 até 500 caracteres."); }
+
             await _consultaRepository.CreateComentario(comentario);
         }
 
         public async Task CreateConsulta(ConsultaDto consulta)
         {
-            if (consulta.Detalhes.Length > 800){throw new Exception("Detalhes mão pode conter mais de 800 caracteres. Caracteres digitados:"+ consulta.Detalhes.Length);}
+            if (consulta.Detalhes.Length > 800) { throw new Exception("Detalhes mão pode conter mais de 800 caracteres. Caracteres digitados:" + consulta.Detalhes.Length); }
 
-           await _consultaRepository.CreateConsulta(consulta);
+            await _consultaRepository.CreateConsulta(consulta);
         }
 
         public Task<IEnumerable<ComentarioDto>> GetComentsByPersonId(int id)
@@ -64,6 +65,33 @@ namespace Domain.Services
         public async Task<IEnumerable<ConsultaDto>> GetNextConsultas()
         {
             return await _consultaRepository.GetNextConsultas();
+        }
+
+        public Task<bool> sendMessage(ComentarioDto comentario)
+        {
+           
+                var factory = new ConnectionFactory() { HostName = "localhost" };
+                using (var connection = factory.CreateConnection())
+                using (var channel = connection.CreateModel())
+                {
+                    channel.QueueDeclare(queue: "chatMessage",
+                                        durable: false,
+                                        exclusive: false,
+                                        autoDelete: false,
+                                        arguments: null);
+
+                    string message = comentario.Comentario;
+                    var body = Encoding.UTF8.GetBytes(message);
+
+                    channel.BasicPublish(exchange: "",
+                                        routingKey: "chatBot",
+                                        basicProperties: null,
+                                        body: body);
+                }
+
+
+                return Task.FromResult<bool>(true);           
+
         }
     }
 }

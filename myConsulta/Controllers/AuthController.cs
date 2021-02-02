@@ -68,14 +68,14 @@ namespace myConsulta.Controllers
                
                 if (!result.Succeeded) return BadRequest(result.Errors);
 
-                var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                // var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-               string confirmationLink = Url.Action("ConfirmEmail", 
-              "Auth", new { userid = user.Id, 
-               token = confirmationToken }, 
-               Request.Scheme);
+            //    string confirmationLink = Url.Action("ConfirmEmail", 
+            //   "Auth", new { userid = user.Id, 
+            //    token = confirmationToken }, 
+            //    Request.Scheme);
 
-                await emailSender.SendConfirmationEmailAsync(registerUserDto.Email, "Confirme seu cadastro", "",confirmationLink);
+            //     await emailSender.SendConfirmationEmailAsync(registerUserDto.Email, "Confirme seu cadastro", "",confirmationLink);
                 
                 if ( string.IsNullOrEmpty(registerUserDto.Role))
                     await _userManager.AddToRoleAsync(user, "User");

@@ -52,14 +52,14 @@ namespace Domain.Services
 
             var userRole = await this.userManager.GetRolesAsync(user);
 
-            var role = this.roleManager.Roles.ToList();
+            var roles = this.roleManager.Roles.ToList();
 
             if (userRole.FirstOrDefault().ToUpper() != "ADMIN")
             {
-                role.Remove(role.FirstOrDefault(x=>x.Name.Contains("Admin")));
+                roles.Remove(roles.FirstOrDefault(x=>x.Name.Contains("Admin")));
             }            
 
-            return role;
+            return roles;
         }
     }
 }

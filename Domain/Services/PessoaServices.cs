@@ -24,9 +24,9 @@ namespace Domain.Services
             await _pessoaRepository.CreatePessoa(pessoa);
         }
 
-        public Task<IEnumerable<PessoaDto>> GetAll()
+        public async Task<IEnumerable<PessoaDto>> GetAll()
         {
-            throw new NotImplementedException();
+            return await _pessoaRepository.GetAll();
         }
 
         public async Task<PessoaDto> GetPessoaByCpf(string cpf)

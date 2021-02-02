@@ -1,0 +1,21 @@
+version: '3'
+
+services:
+  mysqlsrv:
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: "mySql2019"
+      #MYSQL_DATABASE: "testedb"
+    ports:
+      - "3306:3306"
+    volumes:
+      - C:\Users\jorge\OneDrive\Documentos\Docker\volumes
+    networks:
+      - mysql-compose-network
+
+  
+
+networks: 
+  mysql-compose-network:
+    driver: bridge
+

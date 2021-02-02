@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Application.Dtos;
 using Domain.Dtos;
@@ -102,6 +103,7 @@ namespace myConsulta.Controllers
             catch (Exception ex)
             { return BadRequest(ex.Message); }
         }
+
         [HttpPost]
         [Route("comment")]
         public async Task<IActionResult> PostComent([FromBody] ComentarioDto comentario)
@@ -113,6 +115,21 @@ namespace myConsulta.Controllers
                 await _consultaServices.CreateComentario(comentario);
 
                 return Ok();
+
+            }
+            catch (Exception ex)
+            { return BadRequest(ex.Message); }
+        }
+        [HttpPost]
+        [Route("send-message")]
+        public async Task<IActionResult> PostMessage([FromBody] ComentarioDto comentario)
+        {
+            try
+            {
+               
+                await _consultaServices.sendMessage(comentario);
+
+                return Accepted();
 
             }
             catch (Exception ex)

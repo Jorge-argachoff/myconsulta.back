@@ -16,9 +16,25 @@ namespace Infra.Repositories
         {
             Db = db;
         }
-        public Task<IEnumerable<PessoaDto>> GetAll()
+        public async Task<IEnumerable<PessoaDto>> GetAll()
         {
-            throw new NotImplementedException();
+             var query = @"SELECT Id
+                              ,Nome
+                              ,Sobrenome
+                              ,Endereco
+                              ,Numero
+                              ,Bairro
+                              ,Complemento
+                              ,CEP
+                              ,CPF
+                              ,RG
+                              ,Telefone
+                              ,DataNascimento
+                          FROM Tb_Pessoa";
+
+            var result = await Db.SqlConnection.QueryAsync<PessoaDto>(query);
+
+            return result;
         }
 
         public async Task<PessoaDto> GetPessoaByCpf(string cpf)
@@ -43,37 +59,37 @@ namespace Infra.Repositories
             return result;
         }
 
-         public async Task<int> CreatePessoa(PessoaDto pessoa)
+        public async Task<int> CreatePessoa(PessoaDto pessoa)
         {
-            
-                var args = new
-                {
-                    DataCriacao = DateTime.UtcNow
-                    ,
-                    Nome = pessoa.Nome
-                    ,
-                    Sobrenome = pessoa.Sobrenome
-                    ,
-                    Endereco = pessoa.Endereco
-                    ,
-                    Numero = pessoa.Numero
-                    ,
-                    Bairro = pessoa.Bairro
-                    ,
-                    CPF = pessoa.CPF
-                    ,
-                    CEP = pessoa.CEP
-                    ,
-                    RG = pessoa.RG
-                    ,
-                    Telefone = pessoa.Telefone
-                    ,
-                    DataNascimento = pessoa.DataNascimento
-                    ,
-                    Complemento = pessoa.Complemento
-                };
 
-                var query = @"INSERT INTO Tb_Pessoa
+            var args = new
+            {
+                DataCriacao = DateTime.UtcNow
+                ,
+                Nome = pessoa.Nome
+                ,
+                Sobrenome = pessoa.Sobrenome
+                ,
+                Endereco = pessoa.Endereco
+                ,
+                Numero = pessoa.Numero
+                ,
+                Bairro = pessoa.Bairro
+                ,
+                CPF = pessoa.CPF
+                ,
+                CEP = pessoa.CEP
+                ,
+                RG = pessoa.RG
+                ,
+                Telefone = pessoa.Telefone
+                ,
+                DataNascimento = pessoa.DataNascimento
+                ,
+                Complemento = pessoa.Complemento
+            };
+
+            var query = @"INSERT INTO Tb_Pessoa
                             ([DataCriacao]
                             ,[Nome]
                             ,[Sobrenome]
@@ -101,11 +117,11 @@ namespace Infra.Repositories
                             ,@Complemento);
                             SELECT SCOPE_IDENTITY()";
 
-                var id = await Db.SqlConnection.QueryFirstOrDefaultAsync<int>(query, args);
-                
-                return id ;
+            var id = await Db.SqlConnection.QueryFirstOrDefaultAsync<int>(query, args);
 
-            
+            return id;
+
+
         }
 
         public async Task<PessoaDto> GetPessoaByIdConsulta(int idConsulta)

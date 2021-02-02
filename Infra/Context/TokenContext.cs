@@ -27,7 +27,7 @@ namespace Infra.Context
         public TokenContext CreateDbContext(string[] args)
         {
             var optionsBuilder = new DbContextOptionsBuilder<TokenContext>();
-            optionsBuilder.UseMySql(@"host=localhost; Port=3306; Database=AspNetIdentity;username=root;password=123456;");
+            optionsBuilder.UseMySql(@"host=localhost; Port=3306; Database=AspNetIdentity;username=root;password=mySql2019;");
 
             return new TokenContext(optionsBuilder.Options);
         }

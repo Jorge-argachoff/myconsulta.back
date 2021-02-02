@@ -9,10 +9,10 @@ namespace myConsulta.Controllers
 {
      [ApiController]
     [Route("api/[controller]")]
-    public class TesteEmailController : ControllerBase
+    public class EmailController : ControllerBase
     {
         private readonly IEmailService _emailSender;
-        public TesteEmailController(IEmailService emailSender, IHostingEnvironment env)
+        public EmailController(IEmailService emailSender, IHostingEnvironment env)
         {
             _emailSender = emailSender;
         }
@@ -24,8 +24,9 @@ namespace myConsulta.Controllers
             {
                 try
                 {
-                    await _emailSender.SendConfirmationEmailAsync(email.Destino, email.Assunto, email.Mensagem,"");
-                    return Ok("EmailEnviado");
+
+
+                   return Ok("EmailEnviado");
                 }
                 catch (Exception)
                 {
@@ -34,18 +35,7 @@ namespace myConsulta.Controllers
             }
             return Ok(email);
         }
-        public async Task TesteEnvioEmail(string email, string assunto, string mensagem)
-        {
-            try
-            {
-                //email destino, assunto do email, mensagem a enviar
-                
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
+        
        
     }
 }
