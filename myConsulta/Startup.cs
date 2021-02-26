@@ -24,8 +24,9 @@ using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.Options;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
+using Domain.Dtos;
 
 namespace myConsulta
 {
@@ -41,7 +42,14 @@ namespace myConsulta
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddCors();
+            services.AddCors(options => options.AddPolicy("CorsPolicy", 
+            builder => 
+            {
+                builder.AllowAnyMethod().AllowAnyHeader()
+                       .AllowAnyOrigin()
+                       .AllowCredentials();
+            }));
+            services.AddSignalR();
             services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_2);
 
             services.AddTransient(_ => new ConsultaDb(Configuration.GetConnectionString("IdentityConnection")));
@@ -58,7 +66,7 @@ namespace myConsulta
             services.AddTransient<IConsultaRepository, ConsultaRepository>();
             services.AddTransient<IConfiguracaoRepository, ConfiguracaoRepository>();
             services.AddTransient<IPessoaRepository, PessoaRepository>();
-            
+
 
 
             //Domain
@@ -123,8 +131,8 @@ namespace myConsulta
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
-            
-            
+
+
 
             app.UseHttpsRedirection();
             app.UseCors(builder => builder
@@ -133,8 +141,15 @@ namespace myConsulta
                              .AllowAnyHeader()
                              .AllowCredentials());
 
+             
+
+            app.UseSignalR(endpoints =>
+            {
+                endpoints.MapHub<ChatHub>("/chathub");
+            });
 
             app.UseAuthentication();
+
             app.UseMvc();
         }
     }

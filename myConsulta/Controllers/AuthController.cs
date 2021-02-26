@@ -140,14 +140,17 @@ namespace myConsulta.Controllers
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginUserDto loginUserDto)
         {
+            try
+            {
+                
             if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
 
             var userMan = await _userManager.FindByEmailAsync(loginUserDto.Email);
 
-            if (userMan != null && !userMan.EmailConfirmed )
-            {
-                return BadRequest("Email não confirmado, entre no seu email para confirmar.");
-            }
+            // if (userMan != null && !userMan.EmailConfirmed )
+            // {
+            //     return BadRequest("Email não confirmado, entre no seu email para confirmar.");
+            // }
 
             var result = await _signInManager.PasswordSignInAsync(loginUserDto.Email, loginUserDto.Password, false, true);
 
@@ -159,6 +162,12 @@ namespace myConsulta.Controllers
 
             }
             return BadRequest("Usuario ou senha invalidos");
+            }
+            catch (System.Exception ex)
+            {
+                 // TODO
+            return BadRequest(ex.Message);
+            }
         }
 
         private async Task<string> GerarJwt(string email)
