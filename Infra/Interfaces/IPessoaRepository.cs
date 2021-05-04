@@ -9,6 +9,8 @@ namespace Infra.Interfaces
     public interface IPessoaRepository
     {
         Task<PessoaDto> GetPessoaByCpf(string cpf);
+         
+        Task<PessoaDto> GetPessoaByEmail(string email);
 
         Task<int> CreatePessoa(PessoaDto pessoa);
         Task<IEnumerable<PessoaDto>> GetAll();

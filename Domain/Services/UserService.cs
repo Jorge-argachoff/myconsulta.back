@@ -46,6 +46,8 @@ namespace Domain.Services
             return result;
         }
 
+        
+
         public async Task<List<IdentityRole>> ObterPermissoes(string email)
         {
             var user = await this.userManager.FindByEmailAsync(email);
@@ -60,6 +62,19 @@ namespace Domain.Services
             }            
 
             return roles;
+        }
+
+        public async Task<bool> PessoaExists(RegisterUserDto registerUser)
+        {
+            var user =  this.userManager.FindByEmailAsync(registerUser.Email);
+
+            var pessoa =  pessoaRepository.GetPessoaByCpf(registerUser.Cpf);
+
+            
+            if(pessoa.Result != null || user.Result != null )
+                return await Task.FromResult(true);
+
+            return await Task.FromResult(false);
         }
     }
 }

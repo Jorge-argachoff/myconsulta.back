@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Security.Claims;
 using System.Text;
 using System.Threading.Tasks;
 using Application.Dtos;
@@ -17,7 +18,7 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace myConsulta.Controllers
 {
-    
+
     [Route("api/user")]
     [ApiController]
     public class AuthController : ControllerBase
@@ -45,7 +46,7 @@ namespace myConsulta.Controllers
             this._userManager = userManager;
             this._appSettings = appSettings.Value;
         }
-
+        //[ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("register")]
         public async Task<IActionResult> Registrar(RegisterUserDto registerUserDto)
         {
@@ -53,34 +54,36 @@ namespace myConsulta.Controllers
             {
 
                 if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
-                
+
+                if (await userService.PessoaExists(registerUserDto)) return BadRequest("Usuario ja cadastrado");
+
                 var pessoaId = await userService.AddPessoa(registerUserDto);
 
-                        var user = new ApplicationUser
-                        {
-                            PessoaId = pessoaId,
-                            UserName = registerUserDto.Email,
-                            Email = registerUserDto.Email,
-                            EmailConfirmed = false
-                        };
+                var user = new ApplicationUser
+                {
+                    PessoaId = pessoaId,
+                    UserName = registerUserDto.Email,
+                    Email = registerUserDto.Email,
+                    EmailConfirmed = false
+                };
 
                 var result = await _userManager.CreateAsync(user, registerUserDto.Password);
-               
+
                 if (!result.Succeeded) return BadRequest(result.Errors);
 
                 // var confirmationToken = await _userManager.GenerateEmailConfirmationTokenAsync(user);
 
-            //    string confirmationLink = Url.Action("ConfirmEmail", 
-            //   "Auth", new { userid = user.Id, 
-            //    token = confirmationToken }, 
-            //    Request.Scheme);
+                //    string confirmationLink = Url.Action("ConfirmEmail", 
+                //   "Auth", new { userid = user.Id, 
+                //    token = confirmationToken }, 
+                //    Request.Scheme);
 
-            //     await emailSender.SendConfirmationEmailAsync(registerUserDto.Email, "Confirme seu cadastro", "",confirmationLink);
-                
-                if ( string.IsNullOrEmpty(registerUserDto.Role))
+                //     await emailSender.SendConfirmationEmailAsync(registerUserDto.Email, "Confirme seu cadastro", "",confirmationLink);
+
+                if (string.IsNullOrEmpty(registerUserDto.Role))
                     await _userManager.AddToRoleAsync(user, "User");
                 else
-                {                    
+                {
                     bool x = await roleManager.RoleExistsAsync(registerUserDto.Role);
                     if (x)
                         await _userManager.AddToRoleAsync(user, registerUserDto.Role);
@@ -91,6 +94,7 @@ namespace myConsulta.Controllers
 
                 UserDto userDto = new UserDto();
                 userDto.Token = await GerarJwt(registerUserDto.Email);
+                userDto.Email = registerUserDto.Email;
                 return Ok(new { userDto });
 
             }
@@ -101,19 +105,20 @@ namespace myConsulta.Controllers
         }
 
         [AllowAnonymous]
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpGet("confirm")]
-        public async Task<IActionResult> ConfirmEmail([FromQuery]ConfirmEmailDto confirm)
+        public async Task<IActionResult> ConfirmEmail([FromQuery] ConfirmEmailDto confirm)
         {
-            if (confirm == null 
-                || string.IsNullOrEmpty(confirm.UserId)  
+            if (confirm == null
+                || string.IsNullOrEmpty(confirm.UserId)
                 || string.IsNullOrEmpty(confirm.Token))
             {
                 return BadRequest("Dados Invalidos");
             }
 
             var user = await _userManager.FindByIdAsync(confirm.UserId);
-            
-            if(await _userManager.IsEmailConfirmedAsync(user))
+
+            if (await _userManager.IsEmailConfirmedAsync(user))
             {
                 return BadRequest("Email já confirmado");
             }
@@ -124,15 +129,15 @@ namespace myConsulta.Controllers
             }
 
 
-            var result = await _userManager.ConfirmEmailAsync(user,confirm.Token);
-            
+            var result = await _userManager.ConfirmEmailAsync(user, confirm.Token);
+
             if (result.Succeeded)
             {
                 return Ok("Confirmado com sucesso");
             }
 
             return BadRequest("Email não confirmado");
-            
+
         }
 
 
@@ -142,53 +147,76 @@ namespace myConsulta.Controllers
         {
             try
             {
-                
-            if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
 
-            var userMan = await _userManager.FindByEmailAsync(loginUserDto.Email);
+                if (!ModelState.IsValid) return BadRequest(ModelState.Values.SelectMany(e => e.Errors));
 
-            // if (userMan != null && !userMan.EmailConfirmed )
-            // {
-            //     return BadRequest("Email não confirmado, entre no seu email para confirmar.");
-            // }
+                var userMan = await _userManager.FindByEmailAsync(loginUserDto.Email);
 
-            var result = await _signInManager.PasswordSignInAsync(loginUserDto.Email, loginUserDto.Password, false, true);
+                // if (userMan != null && !userMan.EmailConfirmed )
+                // {
+                //     return BadRequest("Email não confirmado, entre no seu email para confirmar.");
+                // }
 
-            if (result.Succeeded)
-            {
-                UserDto user = new UserDto() { Email = loginUserDto.Email };
-                user.Token = await GerarJwt(loginUserDto.Email);
-                return Ok(new { user });
+                var result = await _signInManager.PasswordSignInAsync(loginUserDto.Email, loginUserDto.Password, false, true);
 
-            }
-            return BadRequest("Usuario ou senha invalidos");
+                if (result.Succeeded)
+                {
+                    UserDto user = new UserDto() { Email = loginUserDto.Email };
+                    user.Token = await GerarJwt(loginUserDto.Email);
+                    return Ok(new { user });
+
+                }
+                return BadRequest("Usuario ou senha invalidos");
             }
             catch (System.Exception ex)
             {
-                 // TODO
-            return BadRequest(ex.Message);
+                // TODO
+                return BadRequest(ex.Message);
             }
         }
 
-        private async Task<string> GerarJwt(string email)
+        private async Task<string> GerarJwt(string userEmail)
         {
-            var user = await _userManager.FindByEmailAsync(email);
 
             var tokenHandler = new JwtSecurityTokenHandler();
-
             var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
-
             var tokenDescriptor = new SecurityTokenDescriptor
             {
-                Issuer = _appSettings.Emissor,
-                Audience = _appSettings.ValidoEm,
-                Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
+                Subject = new ClaimsIdentity(new Claim[]
+                {
+                    new Claim(ClaimTypes.Name, userEmail),
+                    new Claim(ClaimTypes.Email, userEmail)
+                    
+
+                }),
+                Expires = DateTime.UtcNow.AddHours(2),
                 SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
             };
+            var token = tokenHandler.CreateToken(tokenDescriptor);
+            return tokenHandler.WriteToken(token);
 
-            return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+
+
+            #region OLD
+            // var user = await _userManager.FindByEmailAsync(email);
+
+            // var tokenHandler = new JwtSecurityTokenHandler();
+
+            // var key = Encoding.ASCII.GetBytes(_appSettings.Secret);
+
+            // var tokenDescriptor = new SecurityTokenDescriptor
+            // {
+            //     Issuer = _appSettings.Emissor,
+            //     Audience = _appSettings.ValidoEm,
+            //     Expires = DateTime.UtcNow.AddHours(_appSettings.ExpiracaoHoras),
+            //     SigningCredentials = new SigningCredentials(new SymmetricSecurityKey(key), SecurityAlgorithms.HmacSha256Signature)
+            // };
+
+            // return tokenHandler.WriteToken(tokenHandler.CreateToken(tokenDescriptor));
+            #endregion
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         [HttpPost("role")]
         public async Task<IActionResult> CreateRole(RoleDto roleDto)
         {

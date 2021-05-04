@@ -146,5 +146,10 @@ namespace Infra.Repositories
 
             return result;
         }
+
+        public Task<PessoaDto> GetPessoaByEmail(string email)
+        {
+            throw new NotImplementedException();
+        }
     }
 }

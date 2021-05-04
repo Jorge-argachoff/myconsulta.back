@@ -11,3 +11,5 @@ C:\Projetos\myConsulta\Infra\bin\Debug\netcoreapp2.2\Application.pdb
 C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.csproj.CopyComplete
 C:\Projetos\myConsulta\infra\bin\Debug\netcoreapp2.2\Infra.runtimeconfig.json
 C:\Projetos\myConsulta\infra\bin\Debug\netcoreapp2.2\Infra.runtimeconfig.dev.json
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.csproj.CoreCompileInputs.cache
+C:\Projetos\myConsulta\Infra\obj\Debug\netcoreapp2.2\Infra.genruntimeconfig.cache

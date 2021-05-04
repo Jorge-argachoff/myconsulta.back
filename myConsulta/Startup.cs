@@ -6,13 +6,12 @@ using System.Threading.Tasks;
 using Application.Dtos;
 using Domain.Repositorios;
 using Domain.Services;
-
 using Infra.Context;
 using Infra.Dapper;
 using Infra.Entities;
 using Infra.Interfaces;
 using Infra.Repositories;
-
+using Swashbuckle.AspNetCore.Swagger;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
@@ -27,6 +26,7 @@ using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.SignalR;
 using Microsoft.IdentityModel.Tokens;
 using Domain.Dtos;
+using Microsoft.OpenApi.Models;
 
 namespace myConsulta
 {
@@ -85,27 +85,46 @@ namespace myConsulta
             var appsSettings = appSettingsSection.Get<AppSettings>();
             var key = Encoding.ASCII.GetBytes(appsSettings.Secret);
 
-            services.AddAuthentication(x =>
+             services.AddAuthentication(x =>
             {
                 x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
                 x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
-
-            }).AddJwtBearer(x =>
+            })
+            .AddJwtBearer(x =>
             {
-
-                x.RequireHttpsMetadata = true;
+                x.RequireHttpsMetadata = false;
                 x.SaveToken = true;
-                x.TokenValidationParameters = new TokenValidationParameters()
+                x.TokenValidationParameters = new TokenValidationParameters
                 {
                     ValidateIssuerSigningKey = true,
                     IssuerSigningKey = new SymmetricSecurityKey(key),
-                    ValidateIssuer = true,
-                    ValidAudience = appsSettings.ValidoEm,
-                    ValidIssuer = appsSettings.Emissor
-
+                    ValidateIssuer = false,
+                    ValidateAudience = false
                 };
-
             });
+            #region OLD
+            // services.AddAuthentication(x =>
+            // {
+            //     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+            //     x.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+
+            // }).AddJwtBearer(x =>
+            // {
+
+            //     x.RequireHttpsMetadata = true;
+            //     x.SaveToken = true;
+            //     x.TokenValidationParameters = new TokenValidationParameters()
+            //     {
+            //         ValidateIssuerSigningKey = true,
+            //         IssuerSigningKey = new SymmetricSecurityKey(key),
+            //         ValidateIssuer = true,
+            //         ValidAudience = appsSettings.ValidoEm,
+            //         ValidIssuer = appsSettings.Emissor
+
+            //     };
+
+            // });
+            #endregion
 
             services.Configure<IdentityOptions>(options =>
             {
@@ -113,10 +132,35 @@ namespace myConsulta
                 options.Password.RequireLowercase = false;
                 options.Password.RequireUppercase = false;
                 options.Password.RequireNonAlphanumeric = false;
-
-
             });
 
+            services.AddSwaggerGen(c =>
+                {
+                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "MyConsultaAPI", Version = "v1" });
+                
+                    c.AddSecurityDefinition("Bearer", new OpenApiSecurityScheme
+                    {
+                        Description =
+                            "JWT Authorization header using the Bearer scheme. \r\n\r\n Enter 'Bearer' [space] and then your token in the text input below.\r\n\r\nExample: \"Bearer 12345abcdef\"",
+                        Name = "Authorization",
+                        In = ParameterLocation.Header,
+                        Type = SecuritySchemeType.ApiKey,
+                        Scheme = "Bearer"
+                    });
+
+                    c.AddSecurityRequirement(new OpenApiSecurityRequirement{ 
+                        {
+                            new OpenApiSecurityScheme{
+                                Reference = new OpenApiReference{
+                                    Id = "Bearer", //The name of the previously defined security scheme.
+                                    Type = ReferenceType.SecurityScheme
+                                }
+                            },new List<string>()
+                        }
+                    });
+                                    
+                }
+            );
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
@@ -151,6 +195,14 @@ namespace myConsulta
             app.UseAuthentication();
 
             app.UseMvc();
+
+            app.UseSwagger();
+
+            app.UseSwaggerUI(c =>
+            {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "My API V1");
+            });
+
         }
     }
 }

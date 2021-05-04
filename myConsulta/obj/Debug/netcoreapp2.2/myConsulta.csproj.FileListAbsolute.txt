@@ -1,6 +1,5 @@
 C:\Projetos\myConsulta\myConsulta\bin\Debug\netcoreapp2.2\appsettings.Development.json
 C:\Projetos\myConsulta\myConsulta\bin\Debug\netcoreapp2.2\appsettings.json
-C:\Projetos\myConsulta\myConsulta\bin\Debug\netcoreapp2.2\Properties\launchSettings.json
 C:\Projetos\myConsulta\myConsulta\bin\Debug\netcoreapp2.2\myConsulta.deps.json
 C:\Projetos\myConsulta\myConsulta\bin\Debug\netcoreapp2.2\myConsulta.runtimeconfig.json
 C:\Projetos\myConsulta\myConsulta\bin\Debug\netcoreapp2.2\myConsulta.runtimeconfig.dev.json
@@ -44,3 +43,5 @@ c:\Projetos\myConsulta\myConsulta.WebApi\obj\Debug\netcoreapp2.2\myConsulta.Razo
 c:\Projetos\myConsulta\myConsulta.WebApi\obj\Debug\netcoreapp2.2\myConsulta.csproj.CopyComplete
 c:\Projetos\myConsulta\myConsulta.WebApi\obj\Debug\netcoreapp2.2\myConsulta.dll
 c:\Projetos\myConsulta\myConsulta.WebApi\obj\Debug\netcoreapp2.2\myConsulta.pdb
+C:\Projetos\myConsulta\myConsulta\obj\Debug\netcoreapp2.2\myConsulta.csproj.CoreCompileInputs.cache
+C:\Projetos\myConsulta\myConsulta\obj\Debug\netcoreapp2.2\myConsulta.genruntimeconfig.cache

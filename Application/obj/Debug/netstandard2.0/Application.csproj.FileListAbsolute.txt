@@ -6,3 +6,4 @@ C:\Projetos\myConsulta\Application\bin\Debug\netstandard2.0\Application.dll
 C:\Projetos\myConsulta\Application\bin\Debug\netstandard2.0\Application.pdb
 C:\Projetos\myConsulta\Application\obj\Debug\netstandard2.0\Application.dll
 C:\Projetos\myConsulta\Application\obj\Debug\netstandard2.0\Application.pdb
+C:\Projetos\myConsulta\Application\obj\Debug\netstandard2.0\Application.csproj.CoreCompileInputs.cache
